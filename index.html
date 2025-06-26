@@ -11,37 +11,59 @@
     </style>
   </head>
   <body>
-   <div style="
-   background-color: #AC2134;
-   text-align: center;
-   padding: 40px;
-   ">
-  <p>这是一个测试</p>
+  <div style="
+  background-color:#f1f1f1;
+  text-align: center;
+  padding:40px;"> 
+  <p>下面是一张图片</p>
+    <img src= "https://kangwenchang.com/logo.png", alt='康文昌图片'
+    width='100px', height="100px">
   </div>
-<div
-style="
-  max-width: 700px;
-  margin: 50px auto;
-  padding: 15px;
+
+  <div
+  style="
+  max-width:700px;
+  margin: 30px auto;
+  padding: 25px;
   line-height: 2.5;
    background-color: #E13C1A";
    text-align: center;>
-<p>该网站页面使用了“康文昌的在线HTML 教学小工具”</p>
-<p>AAAAAAAAAAAAAAAAAA</p>
-<p>AAAAAAAAAAAAAAAAAA</p>
-</div>
+  <p>该网站页面使用了“康文昌的在线HTML 教学小工具</p>
+  </div>
+
+  <div  style=";
+  max-width:700px;
+  margin: 30px auto;
+   background-color: #00aeec";
+   text-align: center;
+   padding: 25px;
+   ">
+    <p>这是一个按钮，点击它会+1</p>
+      <button id="dzs" onclick="DianZan()">0 </button>
+      <script>
+        function DianZan(){
+          let dianzanbiaoqian = window.document.getElementById('dzs');
+          let dainzanshu = parseInt(dianzanbiaoqian.innerText);
+          let new_dianzanshu = dainzanshu + 1;
+          dianzanbiaoqian.innerText = new_dianzanshu;
+          return 
+        }
+      </script>
+    <p>下面是一个输入框：</p>
+    <input value="请输入……",text-align:center>
+  </div>
 
   <div style="
-  max-width: 200px;
-   margin: 50px auto;
-   background-color: #A1C31A";
+   margin: 30px auto;
+   background-color: #A1C31A;
    text-align: center;
-   padding: 40px;
-   text-align: center;
+   padding: 15px;
+   line-heoght: 1.5;
+   font-size: 20px;
+   "
   >
-  <p>教程链接点击下方</p>
-  <a target="_blank" href="https://www.bilibili.com/video/BV1hY411j7UM">视频地址 </a>
+  <p>该视频的地址链接点击下方</p>
+  <a target="_bl ank" href="https://www.bilibili.com/video/BV1hY411j7UM">视频地址 </a>
     </div>
-
   </body>
 </html>
