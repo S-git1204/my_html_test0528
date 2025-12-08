@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BibTeX 格式转换工具</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: #7f8c8d;
+            font-size: 16px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            resize: vertical;
+            transition: border 0.3s;
+        }
+        
+        textarea:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.3s;
+            flex: 1;
+            min-width: 180px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button.secondary {
+            background-color: #2ecc71;
+        }
+        
+        button.secondary:hover {
+            background-color: #27ae60;
+        }
+        
+        .output-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .output-column {
+            flex: 1;
+            position: relative;
+        }
+        
+        .output-title {
+            font-size: 16px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 35px;
+            right: 10px;
+            padding: 8px 15px;
+            background-color: #95a5a6;
+            font-size: 13px;
+            min-width: auto;
+        }
+        
+        .copy-btn:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .function-title {
+            color: #3498db;
+            margin: 25px 0 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            button {
+                flex: 100%;
+            }
+            
+            .output-section {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BibTeX 格式转换工具</h1>
+            <p class="description">提供两种BibTeX格式转换功能：作者姓名格式转换和GB/T 7714-2015标准引用生成</p>
+        </header>
+        
+        <div class="input-section">
+            <h2 class="section-title">输入BibTeX内容</h2>
+            <textarea id="bibtexInput" placeholder="请输入bibtex内容"></textarea>
+        </div>
+        
+        <div class="buttons">
+            <button id="convertBtn" class="secondary">转换</button>
+            <button id="clearBtn">清空输入</button>
+        </div>
+        
+        <div class="output-section">
+            <div class="output-column">
+                <div class="output-title">功能1：作者姓名格式转换结果</div>
+                <div class="output-container">
+                    <textarea id="output1" readonly placeholder="功能1转换结果将显示在这里..."></textarea>
+                    <button class="copy-btn" id="copyBtn1">复制结果</button>
+                </div>
+            </div>
+            
+            <div class="output-column">
+                <div class="output-title">功能2：GB/T 7714-2015格式结果</div>
+                <div class="output-container">
+                    <textarea id="output2" readonly placeholder="功能2转换结果将显示在这里..."></textarea>
+                    <button class="copy-btn" id="copyBtn2">复制结果</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="function-info">
+            <h3 class="function-title">功能1：作者姓名格式转换</h3>
+            <p>将作者姓名从"姓, 名"格式转换为"名缩写+姓"格式，例如：</p>
+            <p><strong>转换前：</strong> Dong, Chongwu and Li, Weidong and Zhou, Zhi and Chen, Xu and Tian, Zhihong and Wen, Wushao</p>
+            <p><strong>转换后：</strong> C. Dong, and W. Li, and Z. Zhou, and X. Chen, and Z. Tian, and W. Wen</p>
+            
+            <h3 class="function-title">功能2：GB/T 7714-2015标准引用格式</h3>
+            <p>将BibTeX格式转换为符合GB/T 7714-2015标准的文献引用格式，例如：</p>
+            <p>C. Dong, W. Li, Z. Zhou, X. Chen, Z. Tian, and W. Wen. Delay-Sensitive Task Offloading With Edge Caching Through Martingale-Based Deep Reinforcement Learning. IEEE Trans. Mob. Comput., 24(7): 6225--6242, 2025.</p>
+        </div>
+        
+        <footer>
+            <p>BibTeX格式转换工具 &copy; 2023</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bibtexInput = document.getElementById('bibtexInput');
+            const output1 = document.getElementById('output1');
+            const output2 = document.getElementById('output2');
+            const convertBtn = document.getElementById('convertBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const copyBtn1 = document.getElementById('copyBtn1');
+            const copyBtn2 = document.getElementById('copyBtn2');
+            
+            // 转换按钮点击事件
+            convertBtn.addEventListener('click', function() {
+                const input = bibtexInput.value;
+                if (!input.trim()) {
+                    alert('请输入BibTeX内容');
+                    return;
+                }
+                
+                try {
+                    // 同时执行两个转换功能
+                    const result1 = convertAuthorFormat(input);
+                    const result2 = convertToGBT7714(input);
+                    
+                    output1.value = result1;
+                    output2.value = result2;
+                } catch (error) {
+                    output1.value = '转换失败：' + error.message;
+                    output2.value = '转换失败：' + error.message;
+                }
+            });
+            
+            // 清空输入
+            clearBtn.addEventListener('click', function() {
+                bibtexInput.value = '';
+                output1.value = '';
+                output2.value = '';
+            });
+            
+            // 复制结果1
+            copyBtn1.addEventListener('click', function() {
+                if (output1.value.trim()) {
+                    output1.select();
+                    document.execCommand('copy');
+                    alert('已复制功能1结果到剪贴板');
+                } else {
+                    alert('没有内容可复制');
+                }
+            });
+            
+            // 复制结果2
+            copyBtn2.addEventListener('click', function() {
+                if (output2.value.trim()) {
+                    output2.select();
+                    document.execCommand('copy');
+                    alert('已复制功能2结果到剪贴板');
+                } else {
+                    alert('没有内容可复制');
+                }
+            });
+            
+            // 转换作者姓名格式函数
+            function convertAuthorFormat(bibtex) {
+                // 提取author字段
+                const authorMatch = bibtex.match(/author\s*=\s*{([^}]*)}/);
+                if (!authorMatch) {
+                    throw new Error('未找到author字段');
+                }
+                
+                const originalAuthors = authorMatch[1];
+                
+                // 分割作者
+                const authors = originalAuthors.split(/\s+and\s+/);
+                
+                // 转换每个作者
+                const convertedAuthors = authors.map(author => {
+                    // 处理"姓, 名"格式
+                    const parts = author.split(',');
+                    if (parts.length < 2) {
+                        return author; // 如果格式不对，返回原样
+                    }
+                    
+                    const lastName = parts[0].trim();
+                    const firstName = parts[1].trim();
+                    
+                    // 提取名的首字母
+                    const firstInitial = firstName.charAt(0).toUpperCase() + '.';
+                    
+                    return `${firstInitial} ${lastName}`;
+                });
+                
+                // 重新组合作者
+                let newAuthors = '';
+                convertedAuthors.forEach((author, index) => {
+                    newAuthors += author;
+                    if (index < convertedAuthors.length - 1) {
+                        newAuthors += ', and ';
+                    } else {
+                        newAuthors += ',';
+                    }
+                });
+                
+                // 替换原bibtex中的author字段
+                return bibtex.replace(/author\s*=\s*{([^}]*)}/, `author = {${newAuthors}}`);
+            }
+            
+            // 转换为GB/T 7714-2015格式函数
+            function convertToGBT7714(bibtex) {
+                // 提取各个字段
+                const titleMatch = bibtex.match(/title\s*=\s*{([^}]*)}/);
+                const authorMatch = bibtex.match(/author\s*=\s*{([^}]*)}/);
+                const journalMatch = bibtex.match(/journal\s*=\s*{([^}]*)}/);
+                const volumeMatch = bibtex.match(/volume\s*=\s*{([^}]*)}/);
+                const numberMatch = bibtex.match(/number\s*=\s*{([^}]*)}/);
+                const pagesMatch = bibtex.match(/pages\s*=\s*{([^}]*)}/);
+                const yearMatch = bibtex.match(/year\s*=\s*{([^}]*)}/);
+                
+                if (!titleMatch || !authorMatch || !journalMatch || !volumeMatch || 
+                    !numberMatch || !pagesMatch || !yearMatch) {
+                    throw new Error('BibTeX格式不完整，缺少必要字段');
+                }
+                
+                const title = titleMatch[1].replace(/[{}]/g, '');
+                const authors = authorMatch[1];
+                const journal = journalMatch[1].replace(/[{}]/g, '');
+                const volume = volumeMatch[1].replace(/[{}]/g, '');
+                const number = numberMatch[1].replace(/[{}]/g, '');
+                const pages = pagesMatch[1].replace(/[{}]/g, '');
+                const year = yearMatch[1].replace(/[{}]/g, '');
+                
+                // 转换作者格式
+                const authorList = authors.split(/\s+and\s+/);
+                const gbtAuthors = authorList.map(author => {
+                    const parts = author.split(',');
+                    if (parts.length < 2) {
+                        return author; // 如果格式不对，返回原样
+                    }
+                    
+                    const lastName = parts[0].trim();
+                    const firstName = parts[1].trim();
+                    const firstInitial = firstName.charAt(0).toUpperCase() + '.';
+                    
+                    return `${firstInitial} ${lastName}`;
+                });
+                
+                // 在最后一名作者前添加"and"
+                let formattedAuthors = '';
+                if (gbtAuthors.length === 1) {
+                    formattedAuthors = gbtAuthors[0];
+                } else if (gbtAuthors.length === 2) {
+                    formattedAuthors = gbtAuthors[0] + ' and ' + gbtAuthors[1];
+                } else {
+                    formattedAuthors = gbtAuthors.slice(0, -1).join(', ') + ', and ' + gbtAuthors[gbtAuthors.length - 1];
+                }
+                
+                // 构建GB/T 7714-2015格式
+                return `${formattedAuthors}. ${title}. ${journal}, ${volume}(${number}): ${pages}, ${year}.`;
+            }
+        });
+    </script>
+</body>
+</html>
