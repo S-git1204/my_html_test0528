@@ -1,3 +1,1 @@
-This is a test html file.
-
-branch2
+This is a test html file and a test branch.
